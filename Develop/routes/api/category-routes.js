@@ -8,7 +8,9 @@ router.get('/', (req, res) => {
   // find all categories
   // be sure to include its associated Products
   console.log("getting categories", req, res)
-  Category.findAll().then((categories) => {
+  Category.findAll({
+    include: [Product],
+  }).then((categories) => {
     if (!categories) res.status(400).json({ "message": "cannot find categories" })
     console.log(categories)
     res.status(200).json(categories)
@@ -19,6 +21,14 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   // find one category by its `id` value
   // be sure to include its associated Products
+  Category.findOne({
+    where: {
+      id: req.params.id,
+    },
+    include: [Product],
+  })
+    .then((category) => res.json(category))
+    .catch((err) => res.status(400).json(err));
 });
 
 router.post('/', (req, res) => {
